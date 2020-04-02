@@ -8,15 +8,17 @@ fontSize = 20;
 
 if ispc
     seperator = '\';
+    datadir = 'F:\GD\vessels';
 elseif ismac
     seperator = '/';
+    datadir = '/Users/chuangchuangzhang/Documents/Data/HSdataIVASO/3Mivaso/HDCORTEX3Mcolligen4_IVASO_09';
 elseif isunix
 else
 end
-datadir = 'F:\GD\vessels';
-vessels = 'Picture1.tif';
 
-rx = 0.1693;  % pixel width
+vessels = '10X_CH2.tif';
+
+rx = 0.265;  % pixel width 
 % Read in mat file.
 % storedStructure = load('binaryimage.mat');
 % binaryImage = storedStructure.BWfinal;
@@ -24,8 +26,8 @@ SourceImg = imread([datadir seperator vessels]);
 I = rgb2gray(SourceImg(:, :, 1:3));
 binaryImage = imbinarize(I);
 
-% Display the Original image.
-% subplot(1, 2, 1);
+% 1. Display the Original image.
+subplot(2, 2, 1);
 imshow(SourceImg(:, :, 1:3), []);
 title('Original Vessel Image', 'FontSize', fontSize, 'Interpreter', 'None');
 % Set up figure properties:
@@ -37,22 +39,37 @@ title('Original Vessel Image', 'FontSize', fontSize, 'Interpreter', 'None');
 set(gcf, 'Name', 'Vessel Diameter', 'NumberTitle', 'Off') 
 drawnow;
 
+% 2. Display Binary Image
+subplot(2, 2, 2);
+imshow(binaryImage);
+title('Binary Image', 'FontSize', fontSize, 'Interpreter', 'None');
 % Get the Euclidean Distance Transform.
 binaryImage(1,:) = false;
 binaryImage(end,:) = false;
 edtImage = bwdist(~binaryImage);
 
+% 3. Display Distance Image
+subplot(2, 2, 3);
+imshow(edtImage);
+title('Distance Image', 'FontSize', fontSize, 'Interpreter', 'None')
+
 skelImage = bwmorph(binaryImage, 'skel', inf);
+
+% 4. Display Skelon of the Binary Image
+subplot(2, 2, 4);
+imshow(skelImage);
+title('Skelon Image', 'FontSize', fontSize, 'Interpreter', 'None');
 % skelImage = bwmorph(skelImage, 'spur', 2);
 % There should be just one now.  Let's check
 [labeledImage, numLines] = bwlabel(skelImage);
 
 
 AllDiameter = 2 * edtImage(skelImage);
-AllDiameter = sort(AllDiameter);
+% AllDiameter = sort(AllDiameter);
 
 UniqDiameter = unique(AllDiameter);
-QDiameter = histc(AllDiameter, UniqDiameter) * rx;
+QDiameter = histc(AllDiameter, UniqDiameter);
+QDiameter = QDiameter * rx;
 UniqDiameter = UniqDiameter * rx;
 
 figure;
@@ -71,7 +88,13 @@ xlim([0.3 2]);
 ax = gca; % current axes
 ax.FontSize = 16;
 
-saveas(gcf, [datadir seperator 'fre_' vessels])
+saveas(gcf, [datadir seperator 'fre_' vessels]);
+
+
+figure;
+% RxAllDiameter = AllDiameter * rx;
+% histfit(RxAllDiameter, 12, 'rayleigh');
+
 % 
 % figure;
 % scatter(UniqDiameter, QDiameter);
