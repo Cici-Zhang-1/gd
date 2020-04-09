@@ -16,32 +16,24 @@ end
 % C4 = '3monthCortexWTC4.tif';
 MergesFolders = dir(datadir);
 
-excepts = {'.'; '..'; '.DS_Store'; 'ivaso'; 'results.xlsx'};
+excepts = {'.'; '..'; '.DS_Store'; 'ivaso'; 'results.xlsx'; 'results3.xlsx'};
 
 Merge = 'Colligen4AQP4.tif';
 
 MergesNum = size(MergesFolders, 1);
 
 for i = 1:1:MergesNum
-    if find(ismember(excepts, MergesFolders(i).name) == 1)
+    if ~isempty(find(ismember(excepts, MergesFolders(i).name) == 1, 1)) || ~MergesFolders(i).isdir
         continue;
     end
     
     RedImg = imread([datadir seperator MergesFolders(i).name seperator 'r_r_' Merge]);
     GreenImg = imread([datadir seperator MergesFolders(i).name seperator 'r_g_' Merge]);
     
-    [Height, Width] = size(RedImg);
+    [Height, Width, s] = size(RedImg);
     MergeImg = zeros(Height, Width, 3);
-    for j = 1:1:Height
-        for k = 1:1:Width
-            if RedImg(j, k)
-                MergeImg(j, k, 1) = 255;
-            end
-            if GreenImg(j, k)
-                MergeImg(j, k, 2) = 255;
-            end
-        end
-    end
+    MergeImg(:, :, 1) = RedImg(:, :, 1);
+    MergeImg(:, :, 2) = GreenImg(:, :, 2);
     
     imwrite(MergeImg,[datadir seperator MergesFolders(i).name seperator 'm_' Merge]);
 end

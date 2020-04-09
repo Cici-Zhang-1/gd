@@ -25,20 +25,19 @@ Merge = 'Colligen4AQP4.tif';
 MergesNum = size(MergesFolders, 2);
 % figure;
 for i = 1:1:MergesNum
-    GreenImg = imread([datadir seperator MergesFolders(i).name seperator 'r_g_' Merge]);
-    RedImg = imread([datadir seperator MergesFolders(i).name seperator 'r_r_' Merge]);
+    MergeImage = imread([datadir seperator MergesFolders(i).name seperator 'm_' Merge]);
     
-    [width, Height] = size(GreenImg);
+    [width, Height, w] = size(MergeImage);
     
     t = 0;
     for j= 1:1:width
         for k = 1:1:Height
-            if GreenImg(j, k) > 0 && RedImg(j, k) > 0 %&& abs(MergeImg(j, k, 1)- MergeImg(j, k, 2)) < 1
+            if MergeImage(j, k, 1) > 0 && MergeImage(j, k, 2) > 0 %&& abs(MergeImg(j, k, 1)- MergeImg(j, k, 2)) < 1
                 t = t+1;
             end
         end
     end
-    [red p] = size(find(RedImg(:, :, 1) >0));
+    [red p] = size(find(MergeImage(:, :, 1) >0));
     radio = t/red;
     Results(i, 1) = { MergesFolders(i).name };
     Results(i, 2) = {radio};
@@ -47,7 +46,7 @@ for i = 1:1:MergesNum
 %     imshow(MergeImg);
 end
 
-writetable(Results, [datadir seperator 'results.xlsx'], 'Sheet', 'Results');
+writetable(Results, [datadir seperator 'results3.xlsx'], 'Sheet', 'Results');
 
 
 

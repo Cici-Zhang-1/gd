@@ -16,7 +16,7 @@ end
 % Aqp4 = '3monthCortexWTAQP4.tif';
 % C4 = '3monthCortexWTC4.tif';
 MergesFolders = dir(datadir);
-excepts = {'.'; '..'; '.DS_Store'; 'ivaso'; 'hdstri6Mcolligen44_24';};
+excepts = {'.'; '..'; '.DS_Store'; 'ivaso'; 'results.xlsx'; 'hdstri6Mcolligen44_24';};
 
 MergesFolder = 'hdcortex10Mcolligen4aqp4_45';
 
@@ -32,7 +32,7 @@ for i = 1:1:MergesNum
 %     while k
 %         prompt3 = 'Input the thred?\n';
 %         thred = input(prompt3);
-    if find(ismember(excepts, MergesFolders(i).name) == 1)
+    if ~isempty(find(ismember(excepts, MergesFolders(i).name) == 1, 1)) || ~MergesFolders(i).isdir
         continue;
     end
     
@@ -40,34 +40,21 @@ for i = 1:1:MergesNum
     MergeImg = tmp(:, :, 1:3);
 
     figure;
-    subplot(1, 2, 1);
+    subplot(2, 2, 1);
     imshow(MergeImg);
-
-    se = strel('disk', thred);
-    background = imopen(MergeImg,se);
-    I2 = MergeImg - background;
-    I2_1 = rgb2gray(I2);
-%         I3 = imadjust(I2_1);
-    level = graythresh(I2_1);
-    disp(level);
-%         bw = imbinarize(I2_1, 0.1);
-    bw = imbinarize(I2_1);
-    MergeImgSub = bwareaopen(bw,20);
-%     imshow(bw)
-
-%     MergeImgSub = staining_img(MergeImg, thred);
-
-    subplot(1, 2, 2)
-    imshow(MergeImgSub);
-%         prompt2 = 'Continue?\n';
-%         k = input(prompt2);
-%     end
+    avg = mean2(nonzeros(MergeImg));
+    sigma = std2(nonzeros(MergeImg));
+    MergeImg(MergeImg < avg * 2) = 0;
+    disp(avg);
+    disp(sigma);
+    subplot(2, 2, 2);
+    imshow(MergeImg);
 
     prompt1= ['Save the image?' MergesFolders(i).name '\n'];
     save_or_not = input(prompt1);  %%%%%%%%%%%%%%%%
     if save_or_not
         disp('saved');
-        imwrite(MergeImgSub,[datadir seperator MergesFolders(i).name seperator 'r_' type Merge]);
+        imwrite(MergeImg,[datadir seperator MergesFolders(i).name seperator 'r_' type Merge]);
     end
 end
 

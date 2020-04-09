@@ -8,7 +8,7 @@ if ispc
     datadir = 'F:\GD\staining';
 elseif ismac
     seperator = '/';
-    datadir = '/Users/chuangchuangzhang/Documents/Data/HSdata';
+    datadir = '/Users/chuangchuangzhang/Documents/Data/HSdata/Test';
 elseif isunix
 else
 end
