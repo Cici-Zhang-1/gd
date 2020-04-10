@@ -3,19 +3,10 @@ close all;
 % staining compare
 % addpath('MatlabCentral_ICIP2018');
 
-if ispc
-    seperator = '\';
-    datadir = 'F:\GD\staining';
-elseif ismac
-    seperator = '/';
-    datadir = '/Users/chuangchuangzhang/Documents/Data/HSdata/Test';
-elseif isunix
-else
-end
+[seperator, datadir, Merge] = get_dir();
 
 load ValidFolders.mat
 MergesFolders = ValidFolders;
-Merge = 'Colligen4AQP4.tif';
 
 MergesNum = size(MergesFolders, 1);
 

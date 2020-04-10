@@ -1,17 +1,8 @@
 clear;
 close all;
-% staining compare
-% addpath('MatlabCentral_ICIP2018');
+% calculate staining
 
-if ispc
-    seperator = '\';
-    datadir = 'F:\GD\staining';
-elseif ismac
-    seperator = '/';
-    datadir = '/Users/chuangchuangzhang/Documents/Data/HSdata/Test';
-elseif isunix
-else
-end
+[seperator, datadir, Merge] = get_dir();
 
 load ValidFolders.mat
 MergesFolders = ValidFolders;
@@ -20,10 +11,8 @@ C = cell(1, 2);
 C(1, 1) = {'string'};
 C(1, 2) = {'double'};
 Results = table('Size', [size(MergesFolders, 2) 2], 'VariableTypes', C);
-Merge = 'Colligen4AQP4.tif';
 
 MergesNum = size(MergesFolders, 2);
-% figure;
 for i = 1:1:MergesNum
     MergeImage = imread([datadir seperator MergesFolders(i).name seperator 'm_' Merge]);
     
@@ -41,20 +30,7 @@ for i = 1:1:MergesNum
     radio = t/red;
     Results(i, 1) = { MergesFolders(i).name };
     Results(i, 2) = {radio};
-    
-%     subplot(2,MergesNum/2,i)
-%     imshow(MergeImg);
 end
 
 writetable(Results, [datadir seperator 'results3.xlsx'], 'Sheet', 'Results');
-
-
-
-% figure;
-% subplot(1,3,1)
-% imshow(Aqp4Img);
-% subplot(1,3,2)
-% imshow(C4Img);
-% subplot(1,3,3)
-% imshow(MergeImg);
 
