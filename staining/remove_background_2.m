@@ -13,28 +13,17 @@ elseif isunix
 else
 end
 
-% Aqp4 = '3monthCortexWTAQP4.tif';
-% C4 = '3monthCortexWTC4.tif';
-MergesFolders = dir(datadir);
-excepts = {'.'; '..'; '.DS_Store'; 'ivaso'; 'hdstri6Mcolligen44_24';};
+load ValidFolders.mat
 
+MergesFolders = ValidFolders;
 MergesFolder = 'hdcortex10Mcolligen4aqp4_45';
-
 Merge = 'Colligen4AQP4.tif';
-
-MergesNum = size(MergesFolders, 1);
-
 type = 'g_';
 thred = 20;
 
+MergesNum = size(MergesFolders, 1);
+
 for i = 1:1:MergesNum
-%     k = 1;
-%     while k
-%         prompt3 = 'Input the thred?\n';
-%         thred = input(prompt3);
-    if find(ismember(excepts, MergesFolders(i).name) == 1)
-        continue;
-    end
     
     tmp = imread([datadir seperator MergesFolders(i).name seperator type Merge]);
     MergeImg = tmp(:, :, 1:3);

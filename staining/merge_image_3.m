@@ -12,21 +12,14 @@ elseif ismac
 elseif isunix
 else
 end
-% Aqp4 = '3monthCortexWTAQP4.tif';
-% C4 = '3monthCortexWTC4.tif';
-MergesFolders = dir(datadir);
 
-excepts = {'.'; '..'; '.DS_Store'; 'ivaso'; 'results.xlsx'; 'results3.xlsx'};
-
+load ValidFolders.mat
+MergesFolders = ValidFolders;
 Merge = 'Colligen4AQP4.tif';
 
 MergesNum = size(MergesFolders, 1);
 
 for i = 1:1:MergesNum
-    if ~isempty(find(ismember(excepts, MergesFolders(i).name) == 1, 1)) || ~MergesFolders(i).isdir
-        continue;
-    end
-    
     RedImg = imread([datadir seperator MergesFolders(i).name seperator 'r_r_' Merge]);
     GreenImg = imread([datadir seperator MergesFolders(i).name seperator 'r_g_' Merge]);
     

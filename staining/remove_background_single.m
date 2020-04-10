@@ -1,7 +1,6 @@
 clear;
 close all;
-% remove background by remove the avg value
-% addpath('MatlabCentral_ICIP2018');
+% staining compare
 
 if ispc
     seperator = '\';
@@ -9,51 +8,44 @@ if ispc
 elseif ismac
     seperator = '/';
     datadir = '/Users/chuangchuangzhang/Documents/Data/HSdata/Test';
+    addpath('./func');
 elseif isunix
 else
 end
 
 global showHistory;
 global currentHistory;
-global currentImage;
-global MergesFolders;
-load ValidFolders.mat
-
-MergesFolders = ValidFolders;
+MergesFolder = '3monthStriatumHDMerge';
 Merge = 'Colligen4AQP4.tif';
+
 type = 'g_';
-n = 2;  % type
-MergesNum = size(MergesFolders, 1);
-folderInfo = struct('datadir', datadir, 'seperator', seperator, 'Merge', Merge, 'type', type, ...
-    'n', n, 'MergesNum', MergesNum);
+n = 2;
+thred = 60;
 
 f = figure;
-screensize = get(groot, 'Screensize');
-left = 100;
-bottom = 100;
-width = screensize(1, 3) - left * 2;
-height = screensize(1, 4) - bottom * 2;
-set(gcf, 'position', [left, bottom, width, height]);
-
-currentImage = 1;
-Origin = imread([datadir seperator MergesFolders(currentImage).name seperator type Merge]);
+Origin = imread([datadir seperator MergesFolder seperator type Merge]);
 [Width, Height, w] = size(Origin);
 
-posHeight = Height ./ Width .* 0.4;
-pos1 = [0.05 0.3 0.425 posHeight];
+Height = Height ./ Width .* 0.4;
+pos1 = [0.05 0.3 0.425 Height];
 subplot('Position', pos1);
-oImgObj = imshow(Origin);
+imshow(Origin);
 title('Original Image');
-[Modified] = get_modified(Origin);
-pos2 = [0.5 0.3 0.425 posHeight];
+Modified = Origin;
+avg = mean2(nonzeros(Modified));
+sigma = std2(nonzeros(Modified));
+Modified(Modified < avg * 2) = 0;
+Modified = imadjust(Modified, [0 0.01 0; 1 0.5 1], []);
+pos2 = [0.5 0.3 0.425 Height];
 subplot('Position',pos2)
 imgobj = imshow(Modified);
 title('Modified Image');
-showHistory = zeros(Width, Height, 1);
 showHistory(:, :, 1) = Modified(:, :, n);
 currentHistory = 1;
-folderInfo.f = f;
-edit_title(folderInfo);
+
+set(gcf, 'position', [500, 100, 900, 900], ...
+    'Name', ['Staining ' Merge], 'Numbertitle', 'off');
+sgtitle(f, ['Staining ' Merge]);
 
 RemoveAllBtn = uicontrol('Parent',f,'Style','pushbutton','Position',[20,140,100,30],...
               'value',0, 'min',0, 'max',1, 'String', 'Remove');
@@ -66,12 +58,12 @@ MeanAllBtn.Callback = @(src, event) display_roi(imgobj, n, 5);
 RemovePixel = uicontrol('Parent', f, 'Style','edit', 'Position', [240, 140, 100, 30], 'String', 0);
 RemovePixelBtn = uicontrol('Parent',f,'Style','pushbutton','Position',[340,140,50,30],...
               'value',0, 'min',0, 'max',1, 'String', 'V');
-RemovePixelBtn.Callback = @(src, event) display_roi(imgobj, n, 6, ...
-    struct('pixel', str2double(RemovePixel.String)));
+RemovePixelBtn.Callback = @(src, event) display_roi(imgobj, n, 6, struct('pixel', str2double(RemovePixel.String)));
           
 SaveBtn = uicontrol('Parent',f,'Style','pushbutton','Position',[400,140,100,30],...
               'value',0, 'min',0, 'max',1, 'String', 'Save');
-SaveBtn.Callback = @(src, event) display_save_img(imgobj, folderInfo);
+SaveBtn.Callback = @(src, event) display_save_img(imgobj, ...
+    [datadir seperator MergesFolder seperator 'r_' type Merge]);
 
 BackBtn = uicontrol('Parent',f,'Style','pushbutton','Position',[510,140,100,30],...
               'value',0, 'min',0, 'max',1, 'String', 'Previous');
@@ -83,9 +75,11 @@ NextBtn.Callback = @(src, event) display_next(imgobj, n);
 
 PreImageBtn = uicontrol('Parent',f,'Style','pushbutton','Position',[20,100,100,30],...
               'value',0, 'min',0, 'max',1, 'String', 'Prev Image');
-PreImageBtn.Callback = @(src, event) display_prev_image(imgobj, oImgObj, folderInfo);
+PreImageBtn.Callback = @(src, event) display_prev_image(imgobj, n);
 
 NextImgBtn = uicontrol('Parent',f,'Style','pushbutton','Position',[130,100,100,30],...
               'value',0, 'min',0, 'max',1, 'String', 'Next Image');
-NextImgBtn.Callback = @(src, event) display_next_image(imgobj, oImgObj, folderInfo);
+NextImgBtn.Callback = @(src, event) display_next_image(imgobj, n);
+
+
 

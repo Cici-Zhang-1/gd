@@ -12,15 +12,15 @@ if ispc
 elseif ismac
     seperator = '/';
     % 3Mivaso 6MIVASO 10MIVASO
-    datadir = '/Users/chuangchuangzhang/Documents/Data/HSdataIVASO/3Mivaso';
+    datadir = '/Users/chuangchuangzhang/Documents/Data/HSdata/Test';
 elseif isunix
 else
 end
 
 VesselFolders = dir(datadir);
-excepts = {'.'; '..'; '.DS_Store'; 'results.xlsx'};
+excepts = {'.'; '..'; '.DS_Store';};
 
-Vessel = '10X_CH2.tif';
+Vessel = 'Colligen4AQP4.tif';
 VesselNum = size(VesselFolders, 1);
 ValidFoldersNum = 1;
 
@@ -38,8 +38,8 @@ for i = 1:1:VesselNum
     end
     
 end
-
-VesselFolders = ValidFolders;
-save('ValidFolders.mat', 'VesselFolders');
+% 
+% VesselFolders = ValidFolders;
+save('ValidFolders.mat', 'ValidFolders');
     
 

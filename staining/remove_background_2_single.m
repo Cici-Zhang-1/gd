@@ -8,7 +8,7 @@ if ispc
     datadir = 'F:\GD\staining';
 elseif ismac
     seperator = '/';
-    datadir = '/Users/chuangchuangzhang/Documents/Data/HSdata/Test';
+    datadir = '/Users/chuangchuangzhang/Documents/Data/HSdata';
 elseif isunix
 else
 end
@@ -18,11 +18,10 @@ end
 % 3monthCortexHDMerge   3monthStriatumHDMerge 6monthCortexHDMerge   6monthStriatumHDMerge
 % 3monthCortexWTMerge   3monthStriatumWTMerge 6monthCortexWTMerge   6monthStriatumWTMerge
 
-MergesFolder = '3monthCortexHDMerge';
-
+MergesFolder = 'hdcor6Mcolligen44_22';
 Merge = 'Colligen4AQP4.tif';
 
-type = 'r_';
+type = 'g_';
 thred = 20;
 
 tmp = imread([datadir seperator MergesFolder seperator type Merge]);
